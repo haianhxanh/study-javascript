@@ -71,4 +71,167 @@ const menu = [
     img: "./images/item-9.jpeg",
     desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
   },
+  {
+    id: 10,
+    title: "vegetarian steak",
+    category: "dinner",
+    price: 32.99,
+    img: "./images/item-10.jpeg",
+    desc: `skateboard fam synth authentic semiotics. Live-edge lyft af, edison bulb yuccie crucifix microdosing.`,
+  },
 ];
+
+// 1st method
+// const sectionCenter = document.querySelector(".section-center");
+// window.addEventListener("DOMContentLoaded", () => {
+//   let displayMenu = menu.map((item) => {
+//     return `
+//       <article class="menu-item">
+//         <img src="${item.img}" class="photo" alt="menu item" />
+//         <div class="item-info">
+//           <header>
+//             <h4>${item.title}</h4>
+//             <h4 class="price">$${item.price}</h4>
+//           </header>
+//           <p class="item-text">
+//             ${item.desc}
+//           </p>
+//         </div>
+//       </article>
+//     `;
+//   });
+
+//   displayMenu = displayMenu.join("");
+
+//   sectionCenter.innerHTML = displayMenu;
+// });
+
+// ================================================
+// 2nd method - code refactoring
+// const sectionCenter = document.querySelector(".section-center");
+// const filterBtns = document.querySelectorAll(".filter-btn");
+
+// // load items
+// window.addEventListener("DOMContentLoaded", () => {
+//   displayMenuItems(menu);
+// });
+
+// // filter items
+// filterBtns.forEach((btn) => {
+//   btn.addEventListener("click", (e) => {
+//     const category = e.currentTarget.dataset.id;
+//     const menuCategory = menu.filter((menuItem) => {
+//       if (menuItem.category == category) {
+//         return menuItem;
+//       }
+//     });
+//     if (category === "all") {
+//       displayMenuItems(menu);
+//     } else {
+//       displayMenuItems(menuCategory);
+//     }
+//   });
+// });
+// const displayMenuItems = (menuItems) => {
+//   let displayMenu = menuItems.map((item) => {
+//     return `
+//       <article class="menu-item">
+//         <img src="${item.img}" class="photo" alt="menu item" />
+//         <div class="item-info">
+//           <header>
+//             <h4>${item.title}</h4>
+//             <h4 class="price">$${item.price}</h4>
+//           </header>
+//           <p class="item-text">
+//             ${item.desc}
+//           </p>
+//         </div>
+//       </article>
+//     `;
+//   });
+//   displayMenu = displayMenu.join("");
+//   sectionCenter.innerHTML = displayMenu;
+// };
+
+// ================================================
+// 3rd method - render our buttons (categories dynamically)
+
+const sectionCenter = document.querySelector(".section-center");
+const container = document.querySelector(".btn-container");
+
+// load items
+window.addEventListener("DOMContentLoaded", () => {
+  displayMenuItems(menu);
+  displayMenuBtns();
+});
+
+const displayMenuItems = (menuItems) => {
+  let displayMenu = menuItems.map((item) => {
+    return `
+      <article class="menu-item">
+        <img src="${item.img}" class="photo" alt="menu item" />
+        <div class="item-info">
+          <header>
+            <h4>${item.title}</h4>
+            <h4 class="price">$${item.price}</h4>
+          </header>
+          <p class="item-text">
+            ${item.desc}
+          </p>
+        </div>
+      </article>
+    `;
+  });
+  displayMenu = displayMenu.join("");
+  sectionCenter.innerHTML = displayMenu;
+};
+
+const displayMenuBtns = () => {
+  // get unique categories
+  const categories = menu.reduce(
+    (values, item) => {
+      if (!values.includes(item.category)) {
+        values.push(item.category);
+      }
+      return values;
+    },
+    ["all"]
+  );
+  const categoryBtns = categories
+    .map((category) => {
+      return `<button class="filter-btn" type="button" data-id="${category}">${category}</button>
+    `;
+    })
+    .join("");
+
+  container.innerHTML = categoryBtns;
+
+  const filterBtns = document.querySelectorAll(".filter-btn");
+
+  // filter items
+  filterBtns.forEach((btn) => {
+    document.querySelector("[data-id='all']").classList.add("active-btn");
+    btn.addEventListener("click", (e) => {
+      const category = e.currentTarget.dataset.id;
+
+      filterBtns.forEach((btn) => {
+        if (e.currentTarget == btn) {
+          btn.classList.add("active-btn");
+        } else {
+          btn.classList.remove("active-btn");
+        }
+      });
+
+      const menuCategory = menu.filter((menuItem) => {
+        if (menuItem.category == category) {
+          return menuItem;
+        }
+      });
+      if (category === "all") {
+        displayMenuItems(menu);
+      } else {
+        displayMenuItems(menuCategory);
+      }
+    });
+  });
+};
